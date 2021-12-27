@@ -15,10 +15,6 @@ const (
 )
 
 type (
-	FetchWriter interface {
-		Retrieve(ctx context.Context) (map[string]Item, error)
-	}
-
 	httpClient interface {
 		Do(*http.Request) (*http.Response, error)
 	}
@@ -33,10 +29,10 @@ type (
 	}
 
 	RetrieveResult struct {
-		List map[string]Item `json:"list"`
+		List map[string]Bookmark `json:"list"`
 	}
 
-	Item struct {
+	Bookmark struct {
 		ID    int    `json:"item_id,string"`
 		Title string `json:"resolved_title"`
 		URL   string `json:"resolved_url"`
@@ -65,7 +61,7 @@ func New(httpCli httpClient, host, consumerKey, accessToken, username string) (*
 	}, nil
 }
 
-func (c *Client) Retrieve(ctx context.Context) (map[string]Item, error) {
+func (c *Client) Retrieve(ctx context.Context) (map[string]Bookmark, error) {
 	req, err := http.NewRequest(http.MethodPost, c.host+endpointRetrieve, c.retrieveOpts)
 	if err != nil {
 		return nil, fmt.Errorf("could not create request for fetch bookmarks: %w", err)
